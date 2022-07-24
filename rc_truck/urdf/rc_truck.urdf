@@ -1,0 +1,757 @@
+<?xml version="1.0" encoding="utf-8"?>
+<robot
+  name="rc_truck">
+ <link name="base_link">
+    <inertial>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <mass
+        value="2" />
+      <inertia
+        ixx="0.01"
+        ixy="0.01"
+        ixz="0.01"
+        iyy="0.01"
+        iyz="0.01"
+        izz="0.01" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rc_truck/meshes/base_link.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+      <box size='0.28 0.211 0.4'/>
+      </geometry>
+    </collision>
+    </link>
+<!-- lidar -->
+
+ <link name="laser">
+    <inertial>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <mass
+        value="0.001" />
+      <inertia
+        ixx="0.01"
+        ixy="0.01"
+        ixz="0.01"
+        iyy="0.01"
+        iyz="0.01"
+        izz="0.01" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rc_truck/meshes/rplidar.stl" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rc_truck/meshes/rplidar.stl" />
+      </geometry>
+    </collision>
+    </link>
+
+
+<joint name="lidar_to_base" type="fixed">
+      <parent link="base_link"/>
+      <child link="laser"/>
+      <origin xyz="0.32 0 0.005"/>
+    </joint>
+
+  <gazebo reference="laser">
+    <sensor type="ray" name="head_rplidar_sensor">
+      <pose>0 0 0.06 0 0 0</pose>
+      <visualize>false</visualize>
+      <update_rate>40</update_rate>
+      <ray>
+        <scan>
+          <horizontal>
+            <samples>720</samples>
+            <resolution>1</resolution>
+            <min_angle>-3.14159265</min_angle>
+            <max_angle>3.14159265</max_angle>
+          </horizontal>
+        </scan>
+        <range>
+          <min>0.2</min>
+          <max>30.0</max>
+          <resolution>0.01</resolution>
+        </range>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.01</stddev>
+        </noise>
+      </ray>
+      <plugin name="gazebo_ros_head_rplidar_controller" filename="libgazebo_ros_laser.so">
+        <topicName>scan</topicName>
+        <frameName>laser</frameName>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+<!-- GPS -->
+ <link name="gnss_1">
+    <inertial>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <mass
+        value="0.001" />
+      <inertia
+        ixx="0.01"
+        ixy="0.01"
+        ixz="0.01"
+        iyy="0.01"
+        iyz="0.01"
+        izz="0.01" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rc_truck/meshes/gps.stl" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rc_truck/meshes/gps.stl" />
+      </geometry>
+    </collision>
+    </link>
+
+<joint name="gnss_1_to_base" type="fixed">
+      <parent link="dumper"/>
+      <child link="gnss_1"/>
+      <origin xyz="0.815 -0.26 0.23"/>
+    </joint>
+  
+  <gazebo>
+    <plugin name="gnss_1_controller" filename="libhector_gazebo_ros_gps.so">
+	<alwayson>true</alwayson>
+	<robotnamespace>gnss_1</robotnamespace>    
+        <updaterate>1.0</updaterate>
+	<bodyname>gnss_1</bodyname>
+	<topicname>gnss_1/topic</topicname>
+	<velocitytopicname>gnss_1/velocity</velocitytopicname>
+        <service>gnss_1/service</service>
+	<gaussiannoise>0.1 0.1 0.1</gaussiannoise>
+	<velocitydrift>0 0 0</velocitydrift>
+	<velocitygaussiannoise>0.1 0.1 0.1</velocitygaussiannoise>
+<referenceLatitude>6648919.39</referenceLatitude>
+<referenceLongitude>266441.65</referenceLongitude>
+<referenceHeading>x</referenceHeading>
+
+
+
+    </plugin>
+  </gazebo>
+
+ <link name="gnss_2">
+    <inertial>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <mass
+        value="0.001" />
+      <inertia
+        ixx="0.01"
+        ixy="0.01"
+        ixz="0.01"
+        iyy="0.01"
+        iyz="0.01"
+        izz="0.01" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rc_truck/meshes/gps.stl" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rc_truck/meshes/gps.stl" />
+      </geometry>
+    </collision>
+    </link>
+
+<joint name="gnss_2_to_base" type="fixed">
+      <parent link="dumper"/>
+      <child link="gnss_2"/>
+      <origin xyz="0.815 0.26 0.23"/>
+    </joint>
+  
+  <gazebo>
+    <plugin name="gnss_2_controller" filename="libhector_gazebo_ros_gps.so">
+	<alwayson>true</alwayson>
+	<robotnamespace>gnss_2</robotnamespace>    
+        <updaterate>1.0</updaterate>
+	<bodyname>gnss_2</bodyname>
+	<topicname>gnss_2/topic</topicname>
+        <service>gnss_2/velocity</service>
+	<velocitytopicname>gnss_2/service</velocitytopicname>
+	<gaussiannoise>0.1 0.1 0.1</gaussiannoise>
+	<velocitydrift>0 0 0</velocitydrift>
+	<velocitygaussiannoise>0.1 0.1 0.1</velocitygaussiannoise>
+<referenceLatitude>6648919.39</referenceLatitude>
+<referenceLongitude>266441.65</referenceLongitude>
+<referenceHeading>x</referenceHeading>
+    </plugin>
+  </gazebo>
+
+<!-- Front Left Wheel -->
+
+ <link name="front_left_steering_link">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia 
+	ixx="0.001" 
+	ixy="0" 
+	ixz="0" 
+	iyy="0.001" 
+	iyz="0" 
+	izz="0.001"/>
+    </inertial>
+    </link>
+
+<joint name="front_left_steering_to_base_link" type="fixed">
+      <parent link="base_link"/>
+      <child link="front_left_steering_link"/>
+
+      <origin xyz="0.09 0.22 -0.075"/>
+      <axis xyz="0 0 1"/>
+      <limit lower="-0.42" upper="0.42"
+             effort="12.5106" velocity="1000"/>
+    </joint>
+
+    <link name="front_left_axle_carrier">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia 
+	ixx="0.001" 
+	ixy="0" 
+	ixz="0" 
+	iyy="0.001" 
+	iyz="0" 
+	izz="0.001"/>
+    </inertial>
+    </link>
+
+    <joint name="front_left_axle_steering_joint" type="revolute">
+      <parent link="front_left_steering_link"/>
+      <child link="front_left_axle_carrier"/>
+      <axis xyz="0 0 1"/>
+      <limit lower="-0.42" upper="0.42"
+             effort="12.5106" velocity="1000"/>
+    </joint>
+
+    <transmission name="front_left_steering_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="front_left_axle_steering_joint">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="front_left_steering_act">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+
+  <link
+    name="frontwheellft">
+    <inertial>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <mass
+        value="0.1" />
+      <inertia
+        ixx="0.01"
+        ixy="0.01"
+        ixz="0.01"
+        iyy="0.01"
+        iyz="0.01"
+        izz="0.01" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rc_truck/meshes/frontwheellft.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 1.57075 0" />
+      <geometry>
+        <cylinder length="0.115" radius="0.14"/>
+      </geometry>
+    </collision>
+  </link>
+
+
+  <joint
+    name="steeringwheelleft"
+    type="continuous">
+    <origin
+        xyz="0 0 0"
+        rpy="0 0 4.752018" />
+    <parent
+      link="front_left_axle_carrier" />
+    <child
+      link="frontwheellft" />
+    <axis
+      xyz="-1 0 0" />
+  </joint>
+
+    <transmission name="frontwheellft_axle_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="steeringwheelleft">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="frontwheellft_axle_act">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+
+<!-- Front Rigth Wheel -->
+
+<link name="front_right_steering_link">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia 
+	ixx="0.001" 
+	ixy="0" 
+	ixz="0" 
+	iyy="0.001" 
+	iyz="0" 
+	izz="0.001"/>
+    </inertial>
+    </link>
+
+<joint name="front_right_steering_to_base_link" type="fixed">
+      <parent link="base_link"/>
+      <child link="front_right_steering_link"/>
+
+      <origin xyz="0.09 -0.25 -0.075"/>
+      <axis xyz="0 0 1"/>
+      <limit lower="0.42" upper="-0.42"
+             effort="12.5106" velocity="1000"/>
+    </joint>
+
+    <link name="front_right_axle_carrier">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia 
+	ixx="0.001" 
+	ixy="0" 
+	ixz="0" 
+	iyy="0.001" 
+	iyz="0" 
+	izz="0.001"/>
+    </inertial>
+    </link>
+
+    <joint name="front_right_axle_steering_joint" type="revolute">
+      <parent link="front_right_steering_link"/>
+      <child link="front_right_axle_carrier"/>
+      <axis xyz="0 0 1"/>
+      <limit lower="-0.42" upper="0.42"
+             effort="12.5106" velocity="1000"/>
+    </joint>
+
+    <transmission name="front_right_steering_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="front_right_axle_steering_joint">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="front_right_steering_act">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+
+  <link
+    name="frontwheelrgt">
+    <inertial>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <mass
+        value="0.1" />
+      <inertia
+        ixx="0.01"
+        ixy="0.01"
+        ixz="0.01"
+        iyy="0.01"
+        iyz="0.01"
+        izz="0.01" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rc_truck/meshes/frontwheelrgt.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 1.57075 0" />
+      <geometry>
+        <cylinder length="0.115" radius="0.14"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="steeringwheelright"
+    type="continuous">
+    <origin
+        xyz="0 0 0"
+        rpy="0 0 -4.752018" />
+    <parent
+      link="front_right_axle_carrier" />
+    <child
+      link="frontwheelrgt" />
+    <axis
+      xyz="1 0 0" />
+  </joint>
+
+
+    <transmission name="frontwheelrgt_axle_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="steeringwheelright">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="frontwheelrgt_axle_act">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+
+
+<!-- Rear Right Wheel -->
+
+    <link name="rear_right_axle_carrier">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia 
+	ixx="0.001" 
+	ixy="0" 
+	ixz="0" 
+	iyy="0.001" 
+	iyz="0" 
+	izz="0.001"/>
+    </inertial>
+    </link>
+
+    <joint name="rear_right_axle_base_joint" type="fixed">
+      <parent link="base_link"/>
+      <child link="rear_right_axle_carrier"/>
+      <origin xyz="-0.44 -0.27 -0.075"/>
+      <axis xyz="0 0 1"/>
+      <limit lower="-0.042" upper="0.042"
+             effort="12.5106" velocity="1000"/>
+    </joint>
+
+  <link
+    name="backwheelrgt">
+    <inertial>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <mass
+        value="0.1" />
+      <inertia
+        ixx="0.01"
+        ixy="0.01"
+        ixz="0.01"
+        iyy="0.01"
+        iyz="0.01"
+        izz="0.01" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rc_truck/meshes/backwheelrgt.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 1.57075 0" />
+      <geometry>
+        <cylinder length="0.222" radius="0.14"/>
+      </geometry>
+    </collision>
+  </link>
+
+
+  <joint
+    name="backwheelright"
+    type="continuous">
+    <origin
+        xyz="0 0 0"
+        rpy="0 0 -4.75018" />
+    <parent
+      link="rear_right_axle_carrier" />
+    <child
+      link="backwheelrgt" />
+    <axis
+      xyz="1 0 0" />
+  </joint>
+
+
+    <transmission name="backwheelrgt_axle_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="backwheelright">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="backwheelrgt_axle_act">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+
+<!-- Rear Left Wheel -->
+
+    <link name="rear_left_axle_carrier">
+    <inertial>
+      <mass value="0.001"/>
+      <inertia 
+	ixx="0.001" 
+	ixy="0" 
+	ixz="0" 
+	iyy="0.001" 
+	iyz="0" 
+	izz="0.001"/>
+    </inertial>
+    </link>
+
+    <joint name="rear_left_axle_base_joint" type="fixed">
+      <parent link="base_link"/>
+      <child link="rear_left_axle_carrier"/>
+      <origin xyz="-0.44 0.23 -0.075"/>
+      <axis xyz="0 0 1"/>
+      <limit lower="-0.042" upper="0.042"
+             effort="12.5106" velocity="1000"/>
+    </joint>
+
+  <link
+    name="backwheellft">
+    <inertial>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <mass
+        value="0.1" />
+      <inertia
+        ixx="0.01"
+        ixy="0.01"
+        ixz="0.01"
+        iyy="0.01"
+        iyz="0.01"
+        izz="0.01" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rc_truck/meshes/backwheellft.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 1.57075 0" />
+      <geometry>
+        <cylinder length="0.222" radius="0.14"/>
+      </geometry>
+    </collision>
+  </link>
+
+  <joint
+    name="backwheelleft"
+    type="continuous">
+    <origin
+        xyz="0 0 0"
+        rpy="0 0 4.752018" />
+    <parent
+      link="rear_left_axle_carrier" />
+    <child
+      link="backwheellft" />
+    <axis
+      xyz="-1 0 0" />
+  </joint>
+
+    <transmission name="backwheelleft_axle_trans">
+      <type>transmission_interface/SimpleTransmission</type>
+      <joint name="backwheelleft">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+      </joint>
+      <actuator name="backwheelleft_axle_act">
+        <hardwareInterface>hardware_interface/EffortJointInterface</hardwareInterface>
+        <mechanicalReduction>1</mechanicalReduction>
+      </actuator>
+    </transmission>
+
+<!-- Dumper -->
+
+  <link
+    name="dumper">
+    <inertial>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <mass
+        value="0.1" />
+      <inertia
+        ixx="0.01"
+        ixy="0.01"
+        ixz="0.01"
+        iyy="0.01"
+        iyz="0.01"
+        izz="0.01" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://rc_truck/meshes/bumper.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.792156862745098 0.819607843137255 0.933333333333333 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+      <box size='0.178 0.732 0.01'/>
+      </geometry>
+    </collision>
+  </link>
+
+
+  <joint
+    name="dumper_joint"
+    type="revolute">
+    <origin
+        xyz="-0.51 -0.025 0.082"
+        rpy="0 0 0" />
+    <parent
+      link="base_link" />
+    <child
+      link="dumper" />
+    <limit 
+      lower="-0.5" upper="0" effort="0.1" velocity="0.1"/>
+    <axis
+      xyz="0 1 0" />
+  </joint>
+
+
+
+
+<transmission name="tran0">
+<type>transmission_interface/SimpleTransmission</type>
+<joint name="dumper_joint">
+<hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+</joint>
+<actuator name="motor0">
+<hardwareInterface>hardware_interface/PositionJointInterface</hardwareInterface>
+<mechanicalReduction>1</mechanicalReduction>
+</actuator>
+</transmission>
+
+<gazebo>
+<plugin name="control" filename="libgazebo_ros_control.so"/>
+</gazebo>
+</robot>

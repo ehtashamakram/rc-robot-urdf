@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<launch>
+<rosparam file="$(find rc_truck)/config/dumper.yaml" command="load" />
+
+<!-- joint_state_controller -->
+
+    <node name="controller_spawner" pkg="joint_state_controller dumper_controller "/>
+  </group>
+</launch>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="namespace" default="/"/>
+  <arg name="world_name" default="worlds/empty.world"/>
+  <arg name="cmd_timeout" default="0.5"/>
+
+  <!-- Vehicle pose -->
+  <arg name="x" default="0.0"/>
+  <arg name="y" default="0.0"/>
+  <arg name="z" default="0.1"/>
+  <arg name="roll" default="0.0"/>
+  <arg name="pitch" default="0.0"/>
+  <arg name="yaw" default="0.0"/>
+
+  <include file="$(find rc_truck)/launch/rc_truck_vehicle.launch">
+    <arg name="namespace" value="$(arg namespace)"/>
+  </include>
+
+  <group ns="$(arg namespace)">
+    <!-- Create the world. -->
+  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+    <arg name="world_name" value="$(find rc_truck)/world/roof_top.world"/>
+    <!-- more default parameters can be changed here -->
+  </include>
+
+    <!-- Spawn the vehicle. -->
+    <node name="spawn_vehicle" pkg="gazebo_ros" type="spawn_model"
+          args="-urdf -param robot_description -model ackermann_vehicle
+                -gazebo_namespace /$(arg namespace)/gazebo
+                -x $(arg x) -y $(arg y) -z $(arg z)
+                -R $(arg roll) -P $(arg pitch) -Y $(arg yaw)"/>
+
+    <!-- Load the joint controllers. One of these publishes the joint states
+         to joint_states. -->
+
+<rosparam file="$(find rc_truck)/config/joint_ctrlr_params.yaml" command="load"/>
+<rosparam file="$(find rc_truck)/config/dumper.yaml" command="load"/>
+
+<!-- joint_state_controller -->
+
+    <node name="controller_spawner" pkg="controller_manager" type="spawner"
+          args=" joint_state_ctrlr left_steering_ctrlr right_steering_ctrlr left_front_axle_ctrlr right_front_axle_ctrlr left_rear_axle_ctrlr right_rear_axle_ctrlr joint_state_controller dumper_controller "/>
+
+    <!-- Control the steering, axle, and shock absorber joints. -->
+    <node name="ackermann_controller" pkg="rc_truck"
+          type="ackermann_controller">
+      <param name="cmd_timeout" value="$(arg cmd_timeout)"/>
+      <rosparam file="$(find rc_truck)/config/ackermann_ctrlr_params.yaml" command="load"/>
+    </node>
+  </group>
+</launch>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
